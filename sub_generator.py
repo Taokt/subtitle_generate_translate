@@ -27,8 +27,8 @@ def main() -> None:
     if len(sys.argv) != 3:
         print(
             "Error: Invalid number of arguments.\n"
-            "Usage: python whisper_subtitle_generator.py <input-path> <output-path>\n"
-            "Example: python whisper_subtitle_generator.py 'video.mp4' 'subtitle.srt'"
+            "Usage: python sub_generator.py <input-path> <output-path>\n"
+            "Example: python sub_generator.py 'video.mp4' 'subtitle.srt'"
         )
         sys.exit(1)
 
