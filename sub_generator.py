@@ -38,7 +38,7 @@ def main() -> None:
         print(
             "Error: Invalid number of arguments.\n"
             "Usage: python sub_generator.py <input-path> <output-path>\n"
-            "Example: python sub_generator.py video.mp4 subtitle.srt"
+            "Example: python sub_generator.py ...\folder_that_contains_videos ...\folder_that_save_subs"
         )
         sys.exit(1)
 
