@@ -2,25 +2,35 @@ import sys
 import torch
 import numpy as np
 import os
+import glob
 import whisper
 from whisper.utils import write_srt
 
 
 def run(input_path: str, output_path: str) -> None:
-    # Use gpu if the device have one
-    torch.cuda.is_available()
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    get_subs(input_path, output_path)
+    # trans_subs(output_path)
 
+
+def get_subs(input_path: str, output_path: str) -> None:
+    # Use gpu if the device have one
+    
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+  
     # Load the model
     model = whisper.load_model("base", device=DEVICE)
-    print(
-        f"Model is {'multilingual' if model.is_multilingual else 'English-only'} "
-        f"and has {sum(np.prod(p.shape) for p in model.parameters()):,} parameters."
-    )
-    result = model.transcribe(input_path)
 
-    with open(output_path, "w", encoding="utf-8") as srt_file:
-        write_srt(result["segments"], file=srt_file)
+    # Creat path to store resulting subtitles
+    output_path = os.path.join(output_path , "English_subtitles")
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
+    # Create subs
+    for filename in glob.glob(os.path.join(input_path, "*.mp4")):
+        result = model.transcribe(filename)
+        current_path = os.path.join(output_path , os.path.basename(os.path.splitext(filename)[0]+'.srt')) 
+        with open(current_path, "w", encoding="utf-8") as srt_file:
+            write_srt(result["segments"], file=srt_file)
 
 
 def main() -> None:
@@ -28,7 +38,7 @@ def main() -> None:
         print(
             "Error: Invalid number of arguments.\n"
             "Usage: python sub_generator.py <input-path> <output-path>\n"
-            "Example: python sub_generator.py 'video.mp4' 'subtitle.srt'"
+            "Example: python sub_generator.py video.mp4 subtitle.srt"
         )
         sys.exit(1)
 
